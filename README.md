@@ -21,11 +21,11 @@ Or install it yourself as:
 In your ActiveRecord model:
 
 ```
-split_date_time field: 'created_at', alias: 'created'
+split_date_time field: 'created_at', prefix: 'created'
 ```
 **field** (required): The table column you'd like to split.
 
-**alias** (optional): A custom prefix to use.
+**prefix** (optional): A custom prefix to use.
 
 The above would generate the following methods:
 

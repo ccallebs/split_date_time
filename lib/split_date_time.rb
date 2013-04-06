@@ -10,39 +10,41 @@ module SplitDateTime
   end
 
   module ClassMethods
+
+
     def split_date_time(options = {})
-      options[:alias] ||= options[:field]
-      define_split_accessors(options[:field], options[:alias])
-      define_concatenation_callback(options[:field], options[:alias])
+      options[:prefix] ||= options[:field]
+      define_split_accessors(options[:field], options[:prefix])
+      define_concatenation_callback(options[:field], options[:prefix])
     end
 
-    def define_split_accessors(field, alias_name)
-      define_method :"#{alias_name}_time" do 
+    def define_split_accessors(field, prefix)
+      define_method :"#{prefix}_time" do 
         field_val = send(field)
-        I18n.l(field_val, format: :js_time) if field_val
+        field_val.strftime('%H:%M') if field_val.present?
       end
-      define_method :"#{alias_name}_time=" do |val|
-        instance_variable_set :"@#{alias_name}_time", val
+      define_method :"#{prefix}_time=" do |val|
+        instance_variable_set :"@#{prefix}_time", val
       end
-      define_method :"#{alias_name}_date" do 
+      define_method :"#{prefix}_date" do 
         field_val = send(field)
-        I18n.l(field_val, format: :js_date) if field_val
+        field_val.strftime('%m/%d/%Y') if field_val.present?
       end
-      define_method :"#{alias_name}_date=" do |val|
-        instance_variable_set :"@#{alias_name}_date", val
+      define_method :"#{prefix}_date=" do |val|
+        instance_variable_set :"@#{prefix}_date", val
       end
     end
 
-    def define_concatenation_callback(field, alias_name)
+    def define_concatenation_callback(field, prefix)
       define_method :concatenate_datetime do 
-        Time.use_zone(timezone) do 
-          date_val = instance_variable_get :"@#{alias_name}_date"
-          time_val = instance_variable_get :"@#{alias_name}_time"
-          self.send "#{field}=", Time.zone.parse("#{date_val} #{time_val}")
+        Time do 
+          date_val = instance_variable_get :"@#{prefix}_date"
+          time_val = instance_variable_get :"@#{prefix}_time"
+          self.send "#{field}=", Time.parse("#{date_val} #{time_val}")
         end   
       end
     end
   end
 end
 
-ActiveRecord::Base.extend SplitDateTime
+ActiveRecord::Base.send :include, SplitDateTime
