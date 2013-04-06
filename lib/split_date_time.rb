@@ -1,4 +1,5 @@
 require 'active_record'
+require 'active_support/all'
 require 'split_date_time/version'
 
 module SplitDateTime
