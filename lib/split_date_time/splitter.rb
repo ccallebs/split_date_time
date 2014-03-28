@@ -57,13 +57,21 @@ module SplitDateTime
 
       def define_concatenation_callback(field, prefix)
         if self.kind_of? ActiveRecord::Base
-          before_save :"concatenate_#{field}"
+          before_validation :"concatenate_#{field}", if: :"#{field}_modified?"
         end
 
         define_method :"concatenate_#{field}" do
-          date_val = instance_variable_get :"@#{Naming.date_getter(field, prefix)}"
-          time_val = instance_variable_get :"@#{Naming.time_getter(field, prefix)}"
-          self.send "#{field}=", DateTime.parse("#{date_val} #{time_val}")
+          time_variable = instance_variable_get(:"@#{Naming.time_getter(field, prefix)}")
+          time_variable ||= send("#{Naming.time_getter(field, prefix)}")
+          date_variable = instance_variable_get(:"@#{Naming.date_getter(field, prefix)}")
+          date_variable ||= send("#{Naming.date_getter(field, prefix)}")
+          self.send "#{field}=", DateTime.parse("#{date_variable} #{time_variable}")
+        end
+
+        define_method :"#{field}_modified?" do
+          time_variable = instance_variable_get(:"@#{Naming.time_getter(field, prefix)}")
+          date_variable = instance_variable_get(:"@#{Naming.date_getter(field, prefix)}")
+          time_variable.present? || date_variable.present?
         end
       end
     end
