@@ -6,6 +6,24 @@ module SplitDateTime
   module Splitter
     extend ActiveSupport::Concern
 
+    class Naming
+      def self.time_getter(field, prefix = nil)
+        prefix.present? : "#{prefix}_time" : "#{field}_time"
+      end
+
+      def self.time_setter(field, prefix = nil)
+        prefix.present? : "#{prefix}_time=" : "#{field}_time="
+      end
+
+      def self.date_getter(field, prefix = nil)
+        prefix.present? : "#{prefix}_date" : "#{field}_date"
+      end
+
+      def self.date_setter(field, prefix = nil)
+        prefix.present? : "#{prefix}_date=" : "#{field}_date"
+      end
+    end
+
     included do
       extend ClassMethods
     end
@@ -17,20 +35,20 @@ module SplitDateTime
         define_concatenation_callback(options[:field], options[:prefix])
       end
 
-      def define_split_accessors(field, prefix)
-        define_method :"#{prefix}_time" do
+      def define_split_accessors(field, prefix = nil)
+        define_method Naming.time_getter(field, prefix) do
           field_val = send(field)
           field_val.strftime('%H:%M') if field_val.present?
         end
-        define_method :"#{prefix}_time=" do |val|
-          instance_variable_set :"@#{prefix}_time", val
+        define_method Naming.time_setter(field, prefix) do |val|
+          instance_variable_set :"@#{Naming.time_getter(field, prefix)}", val
         end
-        define_method :"#{prefix}_date" do
+        define_method Naming.date_getter(field, prefix) do
           field_val = send(field)
           field_val.strftime('%m/%d/%Y') if field_val.present?
         end
-        define_method :"#{prefix}_date=" do |val|
-          instance_variable_set :"@#{prefix}_date", val
+        define_method Naming.date_setter(field, prefix) do |val|
+          instance_variable_set :"@#{Naming.date_getter(field, prefix)}", val
         end
       end
 
