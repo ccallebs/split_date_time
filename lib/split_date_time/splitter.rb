@@ -8,19 +8,23 @@ module SplitDateTime
 
     class Naming
       def self.time_getter(field, prefix = nil)
-        prefix.present? : "#{prefix}_time" : "#{field}_time"
+        "#{prefix_or_field(field, prefix)}_time"
       end
 
       def self.time_setter(field, prefix = nil)
-        prefix.present? : "#{prefix}_time=" : "#{field}_time="
+        "#{prefix_or_field(field, prefix)}_time="
       end
 
       def self.date_getter(field, prefix = nil)
-        prefix.present? : "#{prefix}_date" : "#{field}_date"
+        "#{prefix_or_field(field, prefix)}_date"
       end
 
       def self.date_setter(field, prefix = nil)
-        prefix.present? : "#{prefix}_date=" : "#{field}_date"
+        "#{prefix_or_field(field, prefix)}_date="
+      end
+
+      def self.prefix_or_field(field, prefix = nil)
+        prefix.present? ? "#{prefix}" : "#{field}"
       end
     end
 
