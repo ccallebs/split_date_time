@@ -33,10 +33,9 @@ module SplitDateTime
     end
 
     module ClassMethods
-      def split_date_time(options = {})
-        options[:prefix] ||= options[:field]
-        define_split_accessors(options[:field], options[:prefix])
-        define_concatenation_callback(options[:field], options[:prefix])
+      def split_date_time(field, options = {})
+        define_split_accessors(field, options[:prefix])
+        define_concatenation_callback(field, options[:prefix])
       end
 
       def define_split_accessors(field, prefix = nil)
@@ -57,13 +56,14 @@ module SplitDateTime
       end
 
       def define_concatenation_callback(field, prefix)
-        before_save :"concatenate_#{field}"
+        if self.kind_of? ActiveRecord::Base
+          before_save :"concatenate_#{field}"
+        end
+
         define_method :"concatenate_#{field}" do
-          Time do
-            date_val = instance_variable_get :"@#{prefix}_date"
-            time_val = instance_variable_get :"@#{prefix}_time"
-            self.send "#{field}=", Time.parse("#{date_val} #{time_val}")
-          end
+          date_val = instance_variable_get :"@#{Naming.date_getter(field, prefix)}"
+          time_val = instance_variable_get :"@#{Naming.time_getter(field, prefix)}"
+          self.send "#{field}=", DateTime.parse("#{date_val} #{time_val}")
         end
       end
     end
