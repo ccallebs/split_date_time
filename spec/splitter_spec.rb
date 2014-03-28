@@ -17,7 +17,6 @@ describe SplitDateTime::Splitter do
     end
 
     it 'should create callback method when included' do
-
     end
   end
 
@@ -26,6 +25,9 @@ describe SplitDateTime::Splitter do
     end
 
     it 'should correctly extract a DateTime time' do
+    end
+
+    it 'should correctly add specific prefix when provided' do
     end
   end
 

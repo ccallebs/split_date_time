@@ -1,6 +1,6 @@
 require 'active_record'
 require 'active_support/all'
-require 'split_date_time/version'
+# require 'version'
 
 module SplitDateTime
   module Splitter

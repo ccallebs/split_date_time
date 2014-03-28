@@ -1,1 +1,1 @@
-require 'splitter'
+require_relative '../lib/split_date_time/splitter'
