@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["cacallebs@gmail.com"]
   spec.description   = %q{Allows DateTime fields to be split into a Date field and a Time field.}
   spec.summary       = %q{Allows DateTime fields to be split into a Date field and a Time field.}
-  spec.homepage      = ""
+  spec.homepage      = "http://www.github.com/ccallebs/split_date_time"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
