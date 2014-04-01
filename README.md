@@ -1,5 +1,8 @@
 # SplitDateTime
 
+[![Code Climate](https://codeclimate.com/github/ccallebs/split_date_time.png)](https://codeclimate.com/github/ccallebs/split_date_time)
+[![Code Climate](https://codeclimate.com/github/ccallebs/split_date_time/coverage.png)](https://codeclimate.com/github/ccallebs/split_date_time)
+
 A simple gem that allows you to split a DateTime field into a Date and a Time field for separate processing.
 
 ## Installation
