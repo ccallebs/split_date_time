@@ -30,6 +30,10 @@ split_date_time field: 'created_at', prefix: 'created'
 
 **prefix** (optional): A custom prefix to use.
 
+**date_format** (optional): A custom date format to use.
+
+**time_format** (optional): A custom time format to use.
+
 The above would generate the following methods:
 
 - `created_date`
