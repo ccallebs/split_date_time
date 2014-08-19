@@ -34,21 +34,24 @@ module SplitDateTime
 
     module ClassMethods
       def split_date_time(field, options = {})
-        define_split_accessors(field, options[:prefix])
+        define_split_accessors(field, options[:prefix], options[:date_format], options[:time_format])
         define_concatenation_callback(field, options[:prefix])
       end
 
-      def define_split_accessors(field, prefix = nil)
+      def define_split_accessors(field, prefix = nil, date_format = nil, time_format = nil)
+        time_format ||= '%H:%M'
+        date_format ||= '%m/%d/%Y'
+
         define_method Naming.time_getter(field, prefix) do
           field_val = send(field)
-          field_val.strftime('%H:%M') if field_val.present?
+          field_val.strftime(time_format) if field_val.present?
         end
         define_method Naming.time_setter(field, prefix) do |val|
           instance_variable_set :"@#{Naming.time_getter(field, prefix)}", val
         end
         define_method Naming.date_getter(field, prefix) do
           field_val = send(field)
-          field_val.strftime('%m/%d/%Y') if field_val.present?
+          field_val.strftime(date_format) if field_val.present?
         end
         define_method Naming.date_setter(field, prefix) do |val|
           instance_variable_set :"@#{Naming.date_getter(field, prefix)}", val
